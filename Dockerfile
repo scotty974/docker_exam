@@ -65,7 +65,6 @@ RUN echo '<VirtualHost *:443>\n\
     </VirtualHost>' > /etc/apache2/sites-available/default-ssl.conf
 
 # Configurer MySQL et charger la base de données
-# Configurer MySQL et charger la base de données
 RUN service mysql start && \
     mysql -e "CREATE DATABASE wordpress;" && \
     mysql -e "CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'password';" && \
@@ -83,6 +82,10 @@ RUN a2enmod rewrite
 RUN chown -R www-data:www-data /var/www/html/wordpress && \
     chmod -R 755 /var/www/html/wordpress
 
+
+VOLUME /var/www/html/wordpress
+ 
+    
 # Exposer les ports
 EXPOSE 80 443 3306
 
