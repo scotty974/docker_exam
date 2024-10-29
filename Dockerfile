@@ -39,30 +39,11 @@ RUN mkdir -p /etc/ssl/private && \
 RUN a2enmod ssl && \
     a2ensite default-ssl
 
+# Copier le fichier de configuration Apache
+COPY src/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
 # Ajouter le fichier de sauvegarde de la base de données
 COPY src/wordpress.sql /src/wordpress.sql
-
-
-
-# Configurer Apache pour utiliser le certificat SSL
-RUN echo '<VirtualHost *:443>\n\
-    ServerAdmin admin@localhost\n\
-    DocumentRoot /var/www/html\n\
-    SSLEngine on\n\
-    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt\n\
-    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key\n\
-    Alias /wordpress /var/www/html/wordpress\n\
-    <Directory /var/www/html/wordpress>\n\
-    AllowOverride All\n\
-    Require all granted\n\
-    </Directory>\n\
-    Alias /phpmyadmin /var/www/html/phpmyadmin\n\
-    <Directory /var/www/html/phpmyadmin>\n\
-    AllowOverride All\n\
-    Require all granted\n\
-    </Directory>\n\
-    DirectoryIndex index.php index.html\n\
-    </VirtualHost>' > /etc/apache2/sites-available/default-ssl.conf
 
 # Configurer MySQL et charger la base de données
 RUN service mysql start && \
@@ -77,17 +58,13 @@ RUN service mysql start && \
 # Activer les modules nécessaires
 RUN a2enmod rewrite
 
-
 # Modifier les permissions du répertoire WordPress
 RUN chown -R www-data:www-data /var/www/html/wordpress && \
     chmod -R 755 /var/www/html/wordpress
 
-
 VOLUME /var/www/html/wordpress
- 
-    
+
 # Exposer les ports
 EXPOSE 80 443 
-
 # Démarrer Apache et MySQL
 CMD service mysql start && service apache2 start && tail -f /dev/null
