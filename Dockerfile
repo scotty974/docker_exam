@@ -87,7 +87,7 @@ VOLUME /var/www/html/wordpress
  
     
 # Exposer les ports
-EXPOSE 80 443 3306
+EXPOSE 80 443 
 
 # Démarrer Apache et MySQL
 CMD service mysql start && service apache2 start && tail -f /dev/null
