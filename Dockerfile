@@ -3,6 +3,10 @@ FROM debian:buster
 # Définir le répertoire de travail
 WORKDIR /app
 
+# Définir la variable d'environnement pour l'indexation
+ENV INDEX_ON=1
+
+
 # Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
     apache2 \
